@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Available Doctors | Integrated Patient Care Management System{% endblock %}
+{% block content %}
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-4">
+        <h2 class="mb-4">Available Doctors</h2>
+        <div class="row g-3">
+            {% for doctor in doctors %}
+            <div class="col-md-6 col-xl-4">
+                <div class="available-doctor card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="fw-semibold">{{ doctor.user.full_name if doctor.user else 'Doctor ' ~ doctor.id }}
+                        </h5>
+                        <p class="mb-1 text-muted">{{ doctor.specialization or 'General' }}</p>
+                        <p class="mb-0"><strong>Available:</strong> {{ doctor.available_time or '-' }}</p>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 text-muted">No doctors available.</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Login | Integrated Patient Care Management System{% endblock %}
+{% block content %}
+<div class="auth-wrapper mx-auto">
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="card-body p-4 p-md-5">
+            <h2 class="fw-bold mb-2">{{ expected_role }} Login</h2>
+            <p class="text-muted mb-4">Use your registered {{ expected_role|lower }} account.</p>
+            <form method="post" novalidate>
+                {{ form.hidden_tag() }}
+                <div class="mb-3">{{ form.email.label(class_='form-label') }}{{ form.email(class_='form-control
+                    form-control-lg', placeholder='name@hospital.com') }}{% for error in form.email.errors %}<div
+                        class="text-danger small">{{ error }}</div>{% endfor %}</div>
+                <div class="mb-3">{{ form.password.label(class_='form-label') }}{{ form.password(class_='form-control
+                    form-control-lg', placeholder='Password') }}{% for error in form.password.errors %}<div
+                        class="text-danger small">{{ error }}</div>{% endfor %}</div>
+                <div class="form-check mb-3">{{ form.remember_me(class_='form-check-input') }}{{
+                    form.remember_me.label(class_='form-check-label') }}</div>
+                {{ form.submit(class_='btn btn-primary btn-lg w-100') }}
+            </form>
+            <div class="mt-3 text-center"><a href="{{ url_for('auth.login') }}">Back to role selection</a></div>
+            <div class="mt-4 small text-muted">
+                {% if role_key == 'admin' %}
+                Seed credentials: admin@hospital.local / Admin@12345
+                {% elif role_key == 'doctor' %}
+                Seed credentials: doctor1@hospital.local / Doctor@12345
+                {% elif role_key == 'nurse' %}
+                Seed credentials: nurse@hospital.local / Nurse@12345
+                {% elif role_key == 'patient' %}
+                Seed credentials: patient1@hospital.local / Patient@12345
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

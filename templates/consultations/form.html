@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} | Integrated Patient Care{% endblock %}
+{% block content %}
+<div class="card shadow-sm border-0 rounded-4 mx-auto form-card">
+    <div class="card-body p-4 p-md-5">
+        <h2 class="mb-4">{{ title }}</h2>
+        <form method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="row g-3">
+                <div class="col-md-6">{{ form.patient_id.label(class_='form-label') }}{{
+                    form.patient_id(class_='form-select') }}</div>
+                <div class="col-md-6">{{ form.doctor_id.label(class_='form-label') }}{{
+                    form.doctor_id(class_='form-select') }}</div>
+                <div class="col-12">{{ form.consultation_date.label(class_='form-label') }}{{
+                    form.consultation_date(class_='form-control', type='date') }}</div>
+                <div class="col-12">{{ form.symptoms.label(class_='form-label') }}{{
+                    form.symptoms(class_='form-control', rows='3') }}</div>
+                <div class="col-12">{{ form.diagnosis.label(class_='form-label') }}{{
+                    form.diagnosis(class_='form-control', rows='3') }}</div>
+                <div class="col-12">{{ form.treatment_notes.label(class_='form-label') }}{{
+                    form.treatment_notes(class_='form-control', rows='3') }}</div>
+            </div>
+            <div class="mt-4 d-flex gap-2">
+                {{ form.submit(class_='btn btn-primary') }}
+                <a class="btn btn-outline-secondary" href="{{ url_for('consultation.list_consultations') }}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

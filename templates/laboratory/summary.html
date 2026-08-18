@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Laboratory Report Saved | Integrated Patient Care{% endblock %}
+{% block content %}
+<div class="section-card">
+    <div class="section-card-body">
+        <h3 class="mb-3 text-success"><i class="bi bi-check-circle-fill me-2"></i>Laboratory Report Saved Successfully
+        </h3>
+        <p><strong>Patient:</strong> {{ report.patient.user.full_name if report.patient and report.patient.user else
+            report.patient_id }}</p>
+        <p><strong>Doctor:</strong> {{ report.doctor.user.full_name if report.doctor and report.doctor.user else
+            report.doctor_id }}</p>
+        <p><strong>Test Date:</strong> {{ report.test_date }}</p>
+        <p><strong>Test Type:</strong> {{ report.test_type }}</p>
+        <p><strong>Result:</strong> {{ report.result }}</p>
+        <p><strong>Remarks:</strong> {{ report.remarks or '-' }}</p>
+        <a class="btn btn-primary" href="{{ url_for('laboratory.add_report') }}">Add Another Laboratory Report</a>
+        <a class="btn btn-outline-secondary ms-2" href="{{ url_for('laboratory.list_reports') }}">View Reports</a>
+    </div>
+</div>
+{% endblock %}

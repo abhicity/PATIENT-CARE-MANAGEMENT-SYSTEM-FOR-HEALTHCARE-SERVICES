@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% block title %}Patient Feedback | Integrated Patient Care Management System{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-1">Patient Feedback & Satisfaction</h2>
+        <p class="text-muted mb-0">Average satisfaction score: <strong>{{ avg_satisfaction }}</strong>/5</p>
+    </div>
+    {% if current_user.role in ['Admin', 'Nurse', 'Patient'] %}
+    <a class="btn btn-primary" href="{{ url_for('feedback.add_feedback') }}">Submit Feedback</a>
+    {% endif %}
+</div>
+
+<div class="card shadow-sm border-0 rounded-4 mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Filter by Doctor</label>
+                <select class="form-select" name="doctor_id">
+                    <option value="0">All Doctors</option>
+                    {% for doctor in doctors %}
+                    <option value="{{ doctor.id }}" {% if selected_doctor == doctor.id %}selected{% endif %}>{{ doctor.user.full_name if doctor.user else ('Doctor ' ~ doctor.id) }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Filter by Rating</label>
+                <select class="form-select" name="rating">
+                    <option value="0">All Ratings</option>
+                    {% for r in [5,4,3,2,1] %}
+                    <option value="{{ r }}" {% if selected_rating == r %}selected{% endif %}>{{ r }} Star</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4 d-grid"><button class="btn btn-outline-primary" type="submit">Apply Filters</button></div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Dept</th>
+                        <th>Consult</th>
+                        <th>Doctor</th>
+                        <th>Hospital</th>
+                        <th>Lab</th>
+                        <th>Pharmacy</th>
+                        <th>Avg</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in entries %}
+                    <tr>
+                        <td>{{ item.patient.user.full_name if item.patient and item.patient.user else item.patient_id }}</td>
+                        <td>{{ item.doctor.user.full_name if item.doctor and item.doctor.user else '-' }}</td>
+                        <td>{{ item.department or '-' }}</td>
+                        <td>{{ item.consultation_rating }}</td>
+                        <td>{{ item.doctor_rating }}</td>
+                        <td>{{ item.hospital_service_rating }}</td>
+                        <td>{{ item.laboratory_service_rating }}</td>
+                        <td>{{ item.pharmacy_service_rating }}</td>
+                        <td><strong>{{ item.average_rating }}</strong></td>
+                        <td>{{ item.created_at.strftime('%Y-%m-%d') }}</td>
+                    </tr>
+                    {% if item.comments %}
+                    <tr>
+                        <td colspan="10" class="text-muted small"><strong>Comment:</strong> {{ item.comments }}</td>
+                    </tr>
+                    {% endif %}
+                    {% else %}
+                    <tr><td colspan="10" class="text-center text-muted py-4">No feedback entries found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

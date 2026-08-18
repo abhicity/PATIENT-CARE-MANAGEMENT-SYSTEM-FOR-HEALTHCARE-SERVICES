@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Patient Medical History | Integrated Patient Care{% endblock %}
+{% block content %}
+<div class="section-title">
+    <h2>Patient Medical History</h2>
+    <div class="breadcrumb-line">Dashboard / Reports / Medical History</div>
+</div>
+{% if context %}
+{% include 'reports/_patient_report.html' %}
+{% else %}
+<div class="section-card">
+    <div class="section-card-body text-muted">No patient selected.</div>
+</div>
+{% endif %}
+{% endblock %}

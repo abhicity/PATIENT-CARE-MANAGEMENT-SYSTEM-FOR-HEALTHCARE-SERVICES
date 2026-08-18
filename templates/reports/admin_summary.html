@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Administrative Reports | Integrated Patient Care{% endblock %}
+{% block content %}
+<div class="section-title">
+    <h2>Administrative Reporting</h2>
+    <div class="breadcrumb-line">Dashboard / Reports / Administrative Summary</div>
+</div>
+
+<div class="section-card mb-4">
+    <div class="section-card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-6">
+                <label class="form-label">Report Type</label>
+                <select class="form-select" name="type">
+                    {% set rt = report_type %}
+                    <option value="patients" {% if rt=='patients' %}selected{% endif %}>Patient Report</option>
+                    <option value="appointments" {% if rt=='appointments' %}selected{% endif %}>Appointment Report</option>
+                    <option value="consultations" {% if rt=='consultations' %}selected{% endif %}>Consultation Report</option>
+                    <option value="prescriptions" {% if rt=='prescriptions' %}selected{% endif %}>Prescription Report</option>
+                    <option value="doctor-performance" {% if rt=='doctor-performance' %}selected{% endif %}>Doctor Performance</option>
+                    <option value="department-wise" {% if rt=='department-wise' %}selected{% endif %}>Department-wise Report</option>
+                    <option value="monthly" {% if rt=='monthly' %}selected{% endif %}>Monthly Hospital Report</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-grid"><button class="btn btn-primary" type="submit">View</button></div>
+            <div class="col-md-2 d-grid"><a class="btn btn-outline-success" href="{{ url_for('reports.export_admin_csv', report_type=report_type) }}">Export CSV</a></div>
+            <div class="col-md-2 d-grid"><a class="btn btn-outline-danger" href="{{ url_for('reports.export_admin_pdf', report_type=report_type) }}">Export PDF</a></div>
+        </form>
+    </div>
+</div>
+
+<div class="section-card">
+    <div class="section-card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="card-headline mb-0">{{ report_type.replace('-', ' ').title() }}</h4>
+            <button class="btn btn-outline-secondary" type="button" onclick="window.print()">Print</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>{% for header in headers %}<th>{{ header }}</th>{% endfor %}</tr>
+                </thead>
+                <tbody>
+                    {% for row in rows %}
+                    <tr>{% for cell in row %}<td>{{ cell }}</td>{% endfor %}</tr>
+                    {% else %}
+                    <tr><td colspan="{{ headers|length }}" class="text-center text-muted py-4">No data available.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}{{ title or 'Dashboard' }} | Integrated Patient Care Management System{% endblock %}
+{% block content %}
+<div class="section-title">
+    <h2>{{ title or 'Dashboard' }}</h2>
+    <div class="breadcrumb-line">Dashboard / Overview</div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3"><div class="stat-card card shadow-sm border-0"><div class="card-body"><div class="text-muted">Total Patients</div><div class="display-6 fw-bold">{{ total_patients|default(0) }}</div></div></div></div>
+    <div class="col-md-3"><div class="stat-card card shadow-sm border-0"><div class="card-body"><div class="text-muted">Total Doctors</div><div class="display-6 fw-bold">{{ total_doctors|default(0) }}</div></div></div></div>
+    <div class="col-md-3"><div class="stat-card card shadow-sm border-0"><div class="card-body"><div class="text-muted">Total Nurses</div><div class="display-6 fw-bold">{{ total_nurses|default(0) }}</div></div></div></div>
+    <div class="col-md-3"><div class="stat-card card shadow-sm border-0"><div class="card-body"><div class="text-muted">Today's Appointments</div><div class="display-6 fw-bold">{{ todays_appointments|default(0) }}</div></div></div></div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3"><div class="stat-card card shadow-sm border-0"><div class="card-body"><div class="text-muted">Completed Consultations</div><div class="display-6 fw-bold">{{ completed_consultations|default(0) }}</div></div></div></div>
+    <div class="col-md-3"><div class="stat-card card shadow-sm border-0"><div class="card-body"><div class="text-muted">Cancelled Appointments</div><div class="display-6 fw-bold">{{ cancelled_appointments|default(0) }}</div></div></div></div>
+    <div class="col-md-3"><div class="stat-card card shadow-sm border-0"><div class="card-body"><div class="text-muted">Pending Lab Reports</div><div class="display-6 fw-bold">{{ pending_laboratory_reports|default(0) }}</div></div></div></div>
+    <div class="col-md-3"><div class="stat-card card shadow-sm border-0"><div class="card-body"><div class="text-muted">Average Satisfaction</div><div class="display-6 fw-bold">{{ avg_satisfaction|default(0) }}</div></div></div></div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3"><div class="stat-card card shadow-sm border-0"><div class="card-body"><div class="text-muted">Total Medicines</div><div class="display-6 fw-bold">{{ total_medicines|default(0) }}</div></div></div></div>
+    <div class="col-md-3"><div class="stat-card card shadow-sm border-0"><div class="card-body"><div class="text-muted">Low Stock Medicines</div><div class="display-6 fw-bold">{{ low_stock_medicines|default(0) }}</div></div></div></div>
+    <div class="col-md-3"><div class="stat-card card shadow-sm border-0"><div class="card-body"><div class="text-muted">Total Bills Generated</div><div class="display-6 fw-bold">{{ total_bills_generated|default(0) }}</div></div></div></div>
+    <div class="col-md-3"><div class="stat-card card shadow-sm border-0"><div class="card-body"><div class="text-muted">Revenue Summary</div><div class="display-6 fw-bold">{{ revenue_summary|default(total_billing|default(0)) }}</div></div></div></div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 rounded-4 mb-4">
+            <div class="card-header bg-white border-0 fw-semibold">Recent Appointments</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead><tr><th>ID</th><th>Patient</th><th>Doctor</th><th>Date</th><th>Status</th></tr></thead>
+                        <tbody>
+                            {% for appointment in recent_appointments|default([]) %}
+                            <tr>
+                                <td>{{ appointment.id }}</td>
+                                <td>{{ appointment.patient.user.full_name if appointment.patient and appointment.patient.user else appointment.patient_id }}</td>
+                                <td>{{ appointment.doctor.user.full_name if appointment.doctor and appointment.doctor.user else appointment.doctor_id }}</td>
+                                <td>{{ appointment.appointment_date }}</td>
+                                <td><span class="badge bg-secondary">{{ appointment.status }}</span></td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="5" class="text-center text-muted py-4">No recent appointments.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-header bg-white border-0 fw-semibold">Recent Patients</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead><tr><th>ID</th><th>Name</th><th>Gender</th><th>Blood Group</th></tr></thead>
+                        <tbody>
+                            {% for patient in recent_patients|default([]) %}
+                            <tr><td>{{ patient.id }}</td><td>{{ patient.user.full_name if patient.user else patient.id }}</td><td>{{ patient.gender or '-' }}</td><td>{{ patient.blood_group or '-' }}</td></tr>
+                            {% else %}
+                            <tr><td colspan="4" class="text-center text-muted py-4">No recent patients.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if recent_logins %}
+                <div class="card shadow-sm border-0 rounded-4 mt-4">
+                    <div class="card-header bg-white border-0 fw-semibold">Recent Login Activity</div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0">
+                                <thead><tr><th>User</th><th>Role</th><th>IP</th><th>Time</th></tr></thead>
+                                <tbody>
+                                    {% for activity in recent_logins %}
+                                    <tr><td>{{ activity.user.full_name if activity.user else activity.user_id }}</td><td>{{ activity.role }}</td><td>{{ activity.ip_address or '-' }}</td><td>{{ activity.login_at }}</td></tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow-sm border-0 rounded-4 mb-4"><div class="card-header bg-white border-0 fw-semibold">Appointments by Month</div><div class="card-body"><canvas id="appointmentsChart" height="180"></canvas></div></div>
+        <div class="card shadow-sm border-0 rounded-4 mb-4"><div class="card-header bg-white border-0 fw-semibold">Patients by Gender</div><div class="card-body"><canvas id="genderChart" height="180"></canvas></div></div>
+        <div class="card shadow-sm border-0 rounded-4"><div class="card-header bg-white border-0 fw-semibold">Doctor-wise Consultation Count</div><div class="card-body"><canvas id="doctorChart" height="180"></canvas></div></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    window.dashboardData = {
+        monthlyLabels: {{ monthly_labels|default([])|tojson }},
+        monthlyValues: {{ monthly_values|default([])|tojson }},
+        genderLabels: {{ gender_labels|default([])|tojson }},
+        genderValues: {{ gender_values|default([])|tojson }},
+        doctorLabels: {{ doctor_labels|default([])|tojson }},
+        doctorValues: {{ doctor_values|default([])|tojson }}
+    };
+</script>
+{% endblock %}

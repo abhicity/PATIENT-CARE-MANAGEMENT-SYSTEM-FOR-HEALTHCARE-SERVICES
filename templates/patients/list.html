@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Patients | Integrated Patient Care Management System{% endblock %}
+{% block content %}
+<div class="section-title">
+    <h2>Patient Management</h2>
+    <div class="breadcrumb-line">Dashboard / Patients / Patient List</div>
+</div>
+<div class="section-card">
+    <div class="section-card-body">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+            <h4 class="card-headline mb-0"><i class="bi bi-people-fill me-2"></i>Patient List</h4>
+            <div class="d-flex gap-2">
+                <form class="inline-search" method="get">
+                    <input class="form-control" type="search" name="q" value="{{ query }}"
+                        placeholder="Search patients...">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </form>
+                {% if current_user.role == 'Admin' %}
+                <a class="btn btn-success" href="{{ url_for('patient.add_patient') }}"><i
+                        class="bi bi-plus-lg me-1"></i>Add Patient</a>
+                {% endif %}
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Aadhaar</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for patient in patients %}
+                    <tr>
+                        <td>{{ patient.user.full_name if patient.user else '-' }}</td>
+                        <td>{{ patient.user.email if patient.user else '-' }}</td>
+                        <td>{{ patient.user.phone if patient.user else '-' }}</td>
+                        <td>{{ patient.aadhaar_number or '-' }}</td>
+                        <td>{{ patient.age or '-' }}</td>
+                        <td>{{ patient.gender or '-' }}</td>
+                        <td class="text-nowrap">
+                            <a class="btn btn-sm btn-outline-primary"
+                                href="{{ url_for('patient.patient_profile', patient_id=patient.id) }}">View</a>
+                            {% if current_user.role == 'Admin' %}
+                            <a class="btn btn-sm btn-outline-secondary"
+                                href="{{ url_for('patient.edit_patient', patient_id=patient.id) }}">Edit</a>
+                            <form class="d-inline" method="post"
+                                action="{{ url_for('patient.delete_patient', patient_id=patient.id) }}"
+                                onsubmit="return confirm('Delete this patient?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">No patients found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

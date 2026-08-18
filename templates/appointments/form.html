@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} | Integrated Patient Care Management System{% endblock %}
+{% block content %}
+<div class="card shadow-sm border-0 rounded-4 mx-auto form-card">
+    <div class="card-body p-4 p-md-5">
+        <h2 class="mb-4">{{ title }}</h2>
+        <form method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="row g-3">
+                <div class="col-md-6">{{ form.patient_id.label(class_='form-label') }}{{
+                    form.patient_id(class_='form-select') }}</div>
+                <div class="col-md-6">{{ form.doctor_id.label(class_='form-label') }}{{
+                    form.doctor_id(class_='form-select') }}</div>
+                <div class="col-md-6">{{ form.appointment_date.label(class_='form-label') }}{{
+                    form.appointment_date(class_='form-control', type='date') }}</div>
+                <div class="col-md-6">{{ form.appointment_time.label(class_='form-label') }}{{
+                    form.appointment_time(class_='form-control', type='time') }}</div>
+                <div class="col-12">{{ form.status.label(class_='form-label') }}{{ form.status(class_='form-select') }}
+                </div>
+            </div>
+            <div class="mt-4 d-flex gap-2">{{ form.submit(class_='btn btn-primary') }}<a
+                    class="btn btn-outline-secondary" href="{{ url_for('appointment.list_appointments') }}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

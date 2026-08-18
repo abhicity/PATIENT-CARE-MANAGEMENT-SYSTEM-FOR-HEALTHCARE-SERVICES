@@ -1,0 +1,67 @@
+<div class="section-card">
+    <div class="section-card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="card-headline mb-0"><i class="bi bi-file-medical-fill me-2"></i>Medical Report</h4>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-primary"
+                    href="{{ url_for('reports.download_report', patient_id=context.patient.id) }}">Download Report</a>
+                <a class="btn btn-outline-success"
+                    href="{{ url_for('reports.download_excel_report', patient_id=context.patient.id) }}">Export CSV</a>
+                <a class="btn btn-outline-danger"
+                    href="{{ url_for('reports.download_report_pdf', patient_id=context.patient.id) }}">Export PDF</a>
+                <button class="btn btn-primary" type="button" onclick="window.print()">Print</button>
+            </div>
+        </div>
+        <div class="row g-2 mb-3">
+            <div class="col-md-4"><strong>Patient:</strong> {{ context.patient.user.full_name if context.patient.user
+                else '-' }}</div>
+            <div class="col-md-2"><strong>ID:</strong> {{ context.patient.id }}</div>
+            <div class="col-md-2"><strong>Age:</strong> {{ context.patient.age or '-' }}</div>
+            <div class="col-md-2"><strong>Gender:</strong> {{ context.patient.gender or '-' }}</div>
+            <div class="col-md-2"><strong>Blood Group:</strong> {{ context.patient.blood_group or '-' }}</div>
+            <div class="col-md-4"><strong>Aadhaar:</strong> {{ context.patient.aadhaar_number or '-' }}</div>
+        </div>
+        <hr>
+        <h6>EHR</h6>
+        <p><strong>Diagnosis:</strong> {{ context.ehr_record.diagnosis_details if context.ehr_record else '-' }}</p>
+        <p><strong>Allergies:</strong> {{ context.ehr_record.allergies if context.ehr_record else '-' }}</p>
+        <p><strong>Medications:</strong> {{ context.ehr_record.medications if context.ehr_record else '-' }}</p>
+
+        <h6 class="mt-4">Consultation History</h6>
+        <ul class="mb-3">
+            {% for consultation in context.consultations %}
+            <li>{{ consultation.consultation_date }} - {{ consultation.diagnosis }}</li>
+            {% else %}
+            <li class="text-muted">No consultations found.</li>
+            {% endfor %}
+        </ul>
+
+        <h6>Prescription History</h6>
+        <ul class="mb-3">
+            {% for prescription in context.prescriptions %}
+            <li>{{ prescription.prescribed_on }} - {{ prescription.medicine_name }} ({{ prescription.dosage }}, {{
+                prescription.frequency }}, {{ prescription.duration }})</li>
+            {% else %}
+            <li class="text-muted">No prescriptions found.</li>
+            {% endfor %}
+        </ul>
+
+        <h6>Laboratory Reports</h6>
+        <ul class="mb-3">
+            {% for report in context.lab_reports %}
+            <li>{{ report.test_date }} - {{ report.test_type }}: {{ report.result }}</li>
+            {% else %}
+            <li class="text-muted">No laboratory reports found.</li>
+            {% endfor %}
+        </ul>
+
+        <h6>Chronological Timeline</h6>
+        <ul>
+            {% for item in context.timeline %}
+            <li>{{ item.date }} - {{ item.type }}: {{ item.summary }}</li>
+            {% else %}
+            <li class="text-muted">No timeline records available.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

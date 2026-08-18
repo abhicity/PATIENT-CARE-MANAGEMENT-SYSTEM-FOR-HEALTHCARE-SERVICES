@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Reports & Search | Integrated Patient Care{% endblock %}
+{% block content %}
+<div class="section-title">
+    <h2>Reports & Search Module</h2>
+    <div class="breadcrumb-line">Dashboard / Reports / Patient Search</div>
+</div>
+
+{% if current_user.role in ['Admin', 'Doctor', 'Nurse'] %}
+<div class="mb-3">
+    <a class="btn btn-outline-secondary" href="{{ url_for('reports.admin_summary') }}">Administrative Summary</a>
+</div>
+{% endif %}
+
+{% if current_user.role != 'Patient' %}
+<div class="section-card">
+    <div class="section-card-body">
+        <h4 class="card-headline mb-3"><i class="bi bi-search me-2"></i>Patient Search</h4>
+        <form method="post" class="row g-3">
+            {{ form.hidden_tag() }}
+            <div class="col-md-8">{{ form.patient_query.label(class_='form-label') }}{{
+                form.patient_query(class_='form-control', placeholder='Enter patient ID, name, phone, Aadhaar, or email') }}</div>
+            <div class="col-md-4 d-flex align-items-end">{{ form.submit(class_='btn btn-primary w-100') }}</div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+{% if context %}
+{% include 'reports/_patient_report.html' %}
+{% else %}
+<div class="section-card">
+    <div class="section-card-body text-muted">Search for a patient to view reports and medical history.</div>
+</div>
+{% endif %}
+{% endblock %}

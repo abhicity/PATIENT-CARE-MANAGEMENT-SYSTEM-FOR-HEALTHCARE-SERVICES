@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block title %}Doctor Management | Integrated Patient Care Management System{% endblock %}
+{% block content %}
+<div class="section-title">
+    <h2>Doctor Management</h2>
+    <div class="breadcrumb-line">Dashboard / Doctors / Doctor List</div>
+</div>
+
+{% if current_user.role == 'Admin' and form %}
+<div class="section-card">
+    <div class="section-card-body">
+        <h4 class="card-headline mb-3"><i class="bi bi-person-plus-fill me-2"></i>Add New Doctor</h4>
+        <form method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="row g-3">
+                <div class="col-md-3">
+                    {{ form.full_name.label(class_='form-label') }}
+                    {{ form.full_name(class_='form-control', placeholder='Enter full name') }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.specialization.label(class_='form-label') }}
+                    {{ form.specialization(class_='form-select') }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.qualification.label(class_='form-label') }}
+                    {{ form.qualification(class_='form-control', placeholder='Enter qualification') }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.department.label(class_='form-label') }}
+                    {{ form.department(class_='form-select') }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.phone.label(class_='form-label') }}
+                    {{ form.phone(class_='form-control', placeholder='Enter phone number') }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.email.label(class_='form-label') }}
+                    {{ form.email(class_='form-control', placeholder='Enter email address') }}
+                </div>
+                <div class="col-md-3">
+                    {{ form.available_time.label(class_='form-label') }}
+                    {{ form.available_time(class_='form-control', placeholder='Enter available time') }}
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button class="btn btn-success w-100" type="submit"><i class="bi bi-plus-lg me-1"></i>Add
+                        Doctor</button>
+                </div>
+            </div>
+            {% if form.errors %}
+            <div class="mt-3 alert alert-danger mb-0">
+                Please correct the highlighted form fields and try again.
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<div class="section-card">
+    <div class="section-card-body">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+            <h4 class="card-headline mb-0"><i class="bi bi-clipboard2-pulse-fill me-2"></i>Doctor List</h4>
+            <form method="get" class="inline-search">
+                <input class="form-control" type="search" name="q" value="{{ query }}" placeholder="Search doctor...">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </form>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Doctor ID</th>
+                        <th>Doctor Name</th>
+                        <th>Specialization</th>
+                        <th>Department</th>
+                        <th>Phone Number</th>
+                        <th>Email Address</th>
+                        <th>Available Time</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for doctor in doctors %}
+                    <tr>
+                        <td>DOC{{ '%03d'|format(doctor.id) }}</td>
+                        <td>{{ doctor.user.full_name if doctor.user else '-' }}</td>
+                        <td>{{ doctor.specialization or '-' }}</td>
+                        <td>{{ doctor.department or '-' }}</td>
+                        <td>{{ doctor.user.phone if doctor.user else '-' }}</td>
+                        <td>{{ doctor.user.email if doctor.user else '-' }}</td>
+                        <td>{{ doctor.available_time or '-' }}</td>
+                        <td class="text-nowrap">
+                            <a class="btn btn-primary btn-sm icon-btn"
+                                href="{{ url_for('doctor.doctor_profile', doctor_id=doctor.id) }}"><i
+                                    class="bi bi-eye-fill"></i></a>
+                            {% if current_user.role == 'Admin' %}
+                            <a class="btn btn-warning btn-sm icon-btn"
+                                href="{{ url_for('doctor.edit_doctor', doctor_id=doctor.id) }}"><i
+                                    class="bi bi-pencil-fill"></i></a>
+                            <form class="d-inline" method="post"
+                                action="{{ url_for('doctor.delete_doctor', doctor_id=doctor.id) }}"
+                                onsubmit="return confirm('Delete this doctor?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button class="btn btn-danger btn-sm icon-btn" type="submit"><i
+                                        class="bi bi-trash-fill"></i></button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">No doctors found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mt-2">
+            <div class="table-meta">Showing 1 to {{ doctors|length }} of {{ doctors|length }} entries</div>
+            <div class="table-pager">
+                <button class="btn btn-outline-secondary btn-sm" type="button" disabled>Previous</button>
+                <button class="btn btn-primary btn-sm" type="button">1</button>
+                <button class="btn btn-outline-secondary btn-sm" type="button" disabled>Next</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Billing & Payment | Integrated Patient Care{% endblock %}
+{% block content %}
+<div class="section-title">
+    <h2>Billing & Payment Management</h2>
+    <div class="breadcrumb-line">Dashboard / Billing / Invoices</div>
+</div>
+<div class="section-card">
+    <div class="section-card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <form method="get" class="d-flex gap-2">
+                <input class="form-control" type="text" name="q" value="{{ query }}"
+                    placeholder="Search by patient ID, name, invoice">
+                <button class="btn btn-outline-primary" type="submit">Search</button>
+            </form>
+            {% if current_user.role in ['Admin', 'Nurse'] %}
+            <a class="btn btn-success" href="{{ url_for('billing.create_bill') }}">Create Bill</a>
+            {% endif %}
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Invoice</th>
+                        <th>Patient</th>
+                        <th>Consultation</th>
+                        <th>Laboratory</th>
+                        <th>Pharmacy</th>
+                        <th>Other</th>
+                        <th>Total</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bill in bills %}
+                    <tr>
+                        <td>{{ bill.invoice_number }}</td>
+                        <td>{{ bill.patient.user.full_name if bill.patient and bill.patient.user else bill.patient_id }}
+                        </td>
+                        <td>{{ bill.consultation_charge }}</td>
+                        <td>{{ bill.laboratory_charge }}</td>
+                        <td>{{ bill.pharmacy_charge }}</td>
+                        <td>{{ bill.other_charge }}</td>
+                        <td><strong>{{ bill.total_amount }}</strong></td>
+                        <td>{{ bill.payment_method }}</td>
+                        <td>
+                            {% if current_user.role in ['Admin', 'Nurse'] %}
+                            <form method="post"
+                                action="{{ url_for('billing.update_payment_status', billing_id=bill.id) }}"
+                                class="d-flex gap-2">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <select name="payment_status" class="form-select form-select-sm">
+                                    {% for status in ['Pending', 'Paid', 'Failed', 'Refunded'] %}
+                                    <option value="{{ status }}" {% if bill.payment_status==status %}selected{% endif
+                                        %}>{{ status }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button class="btn btn-sm btn-outline-secondary" type="submit">Update</button>
+                            </form>
+                            {% else %}
+                            <span class="badge bg-secondary">{{ bill.payment_status }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="9" class="text-center py-4 text-muted">No billing records found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

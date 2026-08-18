@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} | Integrated Patient Care Management System{% endblock %}
+{% block content %}
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-4 p-md-5">
+        <h2 class="mb-4">{{ title }}</h2>
+        <form method="post">
+            {{ form.hidden_tag() }}
+            <div class="row g-3">
+                <div class="col-md-6">{{ form.patient_id.label(class_='form-label') }}{{ form.patient_id(class_='form-select') }}</div>
+                <div class="col-md-6">{{ form.doctor_id.label(class_='form-label') }}{{ form.doctor_id(class_='form-select') }}</div>
+                <div class="col-md-4">{{ form.consultation_rating.label(class_='form-label') }}{{ form.consultation_rating(class_='form-select') }}</div>
+                <div class="col-md-4">{{ form.doctor_rating.label(class_='form-label') }}{{ form.doctor_rating(class_='form-select') }}</div>
+                <div class="col-md-4">{{ form.hospital_service_rating.label(class_='form-label') }}{{ form.hospital_service_rating(class_='form-select') }}</div>
+                <div class="col-md-6">{{ form.laboratory_service_rating.label(class_='form-label') }}{{ form.laboratory_service_rating(class_='form-select') }}</div>
+                <div class="col-md-6">{{ form.pharmacy_service_rating.label(class_='form-label') }}{{ form.pharmacy_service_rating(class_='form-select') }}</div>
+                <div class="col-12">{{ form.comments.label(class_='form-label') }}{{ form.comments(class_='form-control', rows=4, placeholder='Suggestions, issues, or appreciation...') }}</div>
+            </div>
+            <div class="mt-4 d-flex gap-2">
+                {{ form.submit(class_='btn btn-primary') }}
+                <a class="btn btn-outline-secondary" href="{{ url_for('feedback.list_feedback') }}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Doctor Profile | Integrated Patient Care Management System{% endblock %}
+{% block content %}
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-4 p-md-5">
+        <h2 class="mb-4">Doctor Profile</h2>
+        <div class="row g-3">
+            <div class="col-md-6"><strong>Name:</strong> {{ doctor.user.full_name if doctor.user else '-' }}</div>
+            <div class="col-md-6"><strong>Email:</strong> {{ doctor.user.email if doctor.user else '-' }}</div>
+            <div class="col-md-6"><strong>Phone:</strong> {{ doctor.user.phone if doctor.user else '-' }}</div>
+            <div class="col-md-6"><strong>Specialization:</strong> {{ doctor.specialization or '-' }}</div>
+            <div class="col-md-6"><strong>Qualification:</strong> {{ doctor.qualification or '-' }}</div>
+            <div class="col-md-6"><strong>Department:</strong> {{ doctor.department or '-' }}</div>
+            <div class="col-12"><strong>Available Time:</strong> {{ doctor.available_time or '-' }}</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

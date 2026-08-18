@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Patient Profile | Integrated Patient Care Management System{% endblock %}
+{% block content %}
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-4 p-md-5">
+        <h2 class="mb-4">Patient Profile</h2>
+        <div class="row g-3">
+            <div class="col-md-6"><strong>Name:</strong> {{ patient.user.full_name if patient.user else '-' }}</div>
+            <div class="col-md-6"><strong>Email:</strong> {{ patient.user.email if patient.user else '-' }}</div>
+            <div class="col-md-6"><strong>Phone:</strong> {{ patient.user.phone if patient.user else '-' }}</div>
+            <div class="col-md-6"><strong>Age:</strong> {{ patient.age or '-' }}</div>
+            <div class="col-md-6"><strong>Gender:</strong> {{ patient.gender or '-' }}</div>
+            <div class="col-md-6"><strong>Blood Group:</strong> {{ patient.blood_group or '-' }}</div>
+            <div class="col-md-6"><strong>Aadhaar:</strong> {{ patient.aadhaar_number or '-' }}</div>
+            <div class="col-12"><strong>Address:</strong> {{ patient.address or '-' }}</div>
+            <div class="col-12"><strong>Medical History:</strong> {{ patient.medical_history or '-' }}</div>
+        </div>
+        <div class="mt-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0">Recent Vitals</h4>
+                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('vitals.add_vitals') }}">Record Vitals</a>
+            </div>
+            {% if patient.vitals %}
+            <div class="table-responsive">
+                <table class="table table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th>Recorded At</th>
+                            <th>BP</th>
+                            <th>Pulse</th>
+                            <th>Temp</th>
+                            <th>SpO2</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in patient.vitals|sort(attribute='recorded_at', reverse=True) %}
+                        <tr>
+                            <td>{{ entry.recorded_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ entry.blood_pressure_systolic }}/{{ entry.blood_pressure_diastolic }}</td>
+                            <td>{{ entry.pulse_rate or '-' }}</td>
+                            <td>{{ entry.temperature_c or '-' }}°C</td>
+                            <td>{{ entry.oxygen_saturation or '-' }}</td>
+                            <td>{{ entry.notes or '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-muted">No vitals have been recorded yet.</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Consultations | Integrated Patient Care{% endblock %}
+{% block content %}
+<div class="section-title">
+    <h2>Consultation Management</h2>
+    <div class="breadcrumb-line">Dashboard / Consultations / History</div>
+</div>
+<div class="section-card">
+    <div class="section-card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="card-headline mb-0"><i class="bi bi-clipboard2-pulse-fill me-2"></i>Consultation History</h4>
+            {% if current_user.role in ['Admin', 'Doctor'] %}
+            <a class="btn btn-success" href="{{ url_for('consultation.add_consultation') }}"><i
+                    class="bi bi-plus-lg me-1"></i>Add Consultation</a>
+            {% endif %}
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Symptoms</th>
+                        <th>Diagnosis</th>
+                        <th>Treatment</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for consultation in consultations %}
+                    <tr>
+                        <td>{{ consultation.consultation_date }}</td>
+                        <td>{{ consultation.patient.user.full_name if consultation.patient and consultation.patient.user
+                            else consultation.patient_id }}</td>
+                        <td>{{ consultation.doctor.user.full_name if consultation.doctor and consultation.doctor.user
+                            else consultation.doctor_id }}</td>
+                        <td>{{ consultation.symptoms }}</td>
+                        <td>{{ consultation.diagnosis }}</td>
+                        <td>{{ consultation.treatment_notes }}</td>
+                        <td class="text-nowrap">
+                            {% if current_user.role == 'Admin' or (current_user.role == 'Doctor' and current_user.doctor_profile and consultation.doctor_id == current_user.doctor_profile.id) %}
+                            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('consultation.edit_consultation', consultation_id=consultation.id) }}">Edit</a>
+                            <form class="d-inline" method="post" action="{{ url_for('consultation.delete_consultation', consultation_id=consultation.id) }}" onsubmit="return confirm('Delete this consultation?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                            </form>
+                            {% else %}
+                            <span class="text-muted">View</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">No consultations found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

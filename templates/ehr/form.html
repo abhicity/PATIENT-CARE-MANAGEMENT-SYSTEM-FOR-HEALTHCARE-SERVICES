@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} | Integrated Patient Care{% endblock %}
+{% block content %}
+<div class="card shadow-sm border-0 rounded-4 mx-auto form-card">
+    <div class="card-body p-4 p-md-5">
+        <h2 class="mb-4">{{ title }}</h2>
+        <form method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="row g-3">
+                <div class="col-12">{{ form.patient_id.label(class_='form-label') }}{{
+                    form.patient_id(class_='form-select') }}</div>
+                <div class="col-12">{{ form.diagnosis_details.label(class_='form-label') }}{{
+                    form.diagnosis_details(class_='form-control', rows='4', placeholder='Enter diagnosis details') }}
+                </div>
+                <div class="col-12">{{ form.allergies.label(class_='form-label') }}{{
+                    form.allergies(class_='form-control', rows='3', placeholder='Enter allergies') }}</div>
+                <div class="col-12">{{ form.medications.label(class_='form-label') }}{{
+                    form.medications(class_='form-control', rows='3', placeholder='Enter current medications') }}</div>
+                <div class="col-12">{{ form.notes.label(class_='form-label') }}{{ form.notes(class_='form-control',
+                    rows='3', placeholder='Enter additional notes') }}</div>
+            </div>
+            <div class="mt-4 d-flex gap-2">
+                {{ form.submit(class_='btn btn-primary') }}
+                <a class="btn btn-outline-secondary" href="{{ url_for('ehr.list_ehr_records') }}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Laboratory Reports | Integrated Patient Care{% endblock %}
+{% block content %}
+<div class="section-title">
+    <h2>Laboratory Management</h2>
+    <div class="breadcrumb-line">Dashboard / Laboratory / Reports</div>
+</div>
+<div class="section-card">
+    <div class="section-card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="card-headline mb-0"><i class="bi bi-beaker me-2"></i>Laboratory Reports</h4>
+            {% if current_user.role in ['Admin', 'Doctor', 'Nurse'] %}
+            <a class="btn btn-success" href="{{ url_for('laboratory.add_report') }}"><i
+                    class="bi bi-plus-lg me-1"></i>Add Report</a>
+            {% endif %}
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Test Date</th>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Test Type</th>
+                        <th>Result</th>
+                        <th>Remarks</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in reports %}
+                    <tr>
+                        <td>{{ report.test_date }}</td>
+                        <td>{{ report.patient.user.full_name if report.patient and report.patient.user else
+                            report.patient_id }}</td>
+                        <td>{{ report.doctor.user.full_name if report.doctor and report.doctor.user else
+                            report.doctor_id }}</td>
+                        <td>{{ report.test_type }}</td>
+                        <td>{{ report.result }}</td>
+                        <td>{{ report.remarks or '-' }}</td>
+                        <td class="text-nowrap">
+                            {% if current_user.role in ['Admin', 'Nurse'] or (current_user.role == 'Doctor' and current_user.doctor_profile and report.doctor_id == current_user.doctor_profile.id) %}
+                            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('laboratory.edit_report', report_id=report.id) }}">Edit</a>
+                            <form class="d-inline" method="post" action="{{ url_for('laboratory.delete_report', report_id=report.id) }}" onsubmit="return confirm('Delete this laboratory report?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                            </form>
+                            {% else %}
+                            <span class="text-muted">View</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">No laboratory reports found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -162,4 +162,3 @@ If MySQL variables are not set, the app automatically uses SQLite at `database/p
 - Pharmacist login: `/auth/login/pharmacist`
 - Laboratory Staff login: `/auth/login/laboratorystaff`
 
-"# PATIENT-CARE-MANAGEMENT-SYSTEM-FOR-HEALTHCARE-SERVICES" 

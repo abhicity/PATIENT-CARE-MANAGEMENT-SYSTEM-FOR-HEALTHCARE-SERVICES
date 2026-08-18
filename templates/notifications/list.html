@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}Notifications | Integrated Patient Care{% endblock %}
+{% block content %}
+<div class="section-title">
+    <h2>Notification Management</h2>
+    <div class="breadcrumb-line">Dashboard / Notifications</div>
+</div>
+<div class="section-card">
+    <div class="section-card-body">
+        <div class="d-flex justify-content-end mb-3">
+            {% if current_user.role in ['Admin', 'Nurse', 'Doctor', 'LaboratoryStaff', 'Pharmacist'] %}
+            <a class="btn btn-success" href="{{ url_for('notification.create_notification') }}">Create Notification</a>
+            {% endif %}
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Type</th>
+                        <th>Title</th>
+                        <th>Message</th>
+                        <th>Delivery</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in notifications %}
+                    <tr>
+                        <td>{{ item.created_at }}</td>
+                        <td>{{ item.notification_type }}</td>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.message }}</td>
+                        <td><span class="badge bg-info text-dark">{{ item.delivery_status }}</span></td>
+                        <td>
+                            {% if item.status == 'Unread' %}
+                            <span class="badge bg-warning text-dark">Unread</span>
+                            {% else %}
+                            <span class="badge bg-success">Read</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if item.status == 'Unread' %}
+                            <form method="post"
+                                action="{{ url_for('notification.mark_read', notification_id=item.id) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button class="btn btn-sm btn-outline-secondary" type="submit">Mark Read</button>
+                            </form>
+                            {% else %}
+                            <span class="text-muted">Done</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">No notifications found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

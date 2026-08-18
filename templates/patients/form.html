@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} | Integrated Patient Care Management System{% endblock %}
+{% block content %}
+<div class="card shadow-sm border-0 rounded-4 mx-auto form-card">
+    <div class="card-body p-4 p-md-5">
+        <h2 class="mb-4">{{ title }}</h2>
+        <form method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="row g-3">
+                <div class="col-md-6">{{ form.full_name.label(class_='form-label') }}{{
+                    form.full_name(class_='form-control') }}</div>
+                <div class="col-md-6">{{ form.email.label(class_='form-label') }}{{ form.email(class_='form-control') }}
+                </div>
+                <div class="col-md-6">{{ form.phone.label(class_='form-label') }}{{ form.phone(class_='form-control') }}
+                </div>
+                <div class="col-md-6">{{ form.age.label(class_='form-label') }}{{ form.age(class_='form-control') }}
+                </div>
+                <div class="col-md-6">{{ form.gender.label(class_='form-label') }}{{ form.gender(class_='form-select')
+                    }}</div>
+                <div class="col-md-6">{{ form.blood_group.label(class_='form-label') }}{{
+                    form.blood_group(class_='form-control') }}</div>
+                <div class="col-md-6">{{ form.aadhaar_number.label(class_='form-label') }}{{
+                    form.aadhaar_number(class_='form-control') }}</div>
+                <div class="col-12">{{ form.address.label(class_='form-label') }}{{ form.address(class_='form-control',
+                    rows='3') }}</div>
+                <div class="col-12">{{ form.medical_history.label(class_='form-label') }}{{
+                    form.medical_history(class_='form-control', rows='4') }}</div>
+            </div>
+            <div class="mt-4 d-flex gap-2">{{ form.submit(class_='btn btn-primary') }}<a
+                    class="btn btn-outline-secondary" href="{{ url_for('patient.list_patients') }}">Cancel</a></div>
+        </form>
+    </div>
+</div>
+{% endblock %}

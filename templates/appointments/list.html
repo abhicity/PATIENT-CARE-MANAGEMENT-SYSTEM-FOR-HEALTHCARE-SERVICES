@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Appointments | Integrated Patient Care Management System{% endblock %}
+{% block content %}
+<div class="section-title">
+    <h2>Appointment Management</h2>
+    <div class="breadcrumb-line">Dashboard / Appointments / Appointment List</div>
+</div>
+<div class="section-card">
+    <div class="section-card-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="card-headline mb-0"><i class="bi bi-calendar-check-fill me-2"></i>Appointment List</h4>
+            {% if current_user.role in ['Admin', 'Patient'] %}
+            <a class="btn btn-success" href="{{ url_for('appointment.book_appointment') }}"><i
+                    class="bi bi-plus-lg me-1"></i>Book Appointment</a>
+            {% endif %}
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in appointments %}
+                    <tr>
+                        <td>{{ appointment.id }}</td>
+                        <td>{{ appointment.patient.user.full_name if appointment.patient and appointment.patient.user
+                            else
+                            appointment.patient_id }}</td>
+                        <td>{{ appointment.doctor.user.full_name if appointment.doctor and appointment.doctor.user else
+                            appointment.doctor_id }}</td>
+                        <td>{{ appointment.appointment_date }}</td>
+                        <td>{{ appointment.appointment_time }}</td>
+                        <td>
+                            <span class="badge bg-secondary">{{ appointment.status }}</span>
+                            {% if current_user.role in ['Admin', 'Doctor'] %}
+                            <form class="d-inline ms-2" method="post"
+                                action="{{ url_for('appointment.update_status', appointment_id=appointment.id) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="status" value="Confirmed">
+                                <button class="btn btn-sm btn-outline-success" type="submit">Confirm</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">No appointments found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
